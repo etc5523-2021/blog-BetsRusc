@@ -1,0 +1,92 @@
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
+```
+
+
+# Data Description:
+The data used for this blog post was obtained from Our World in Data in the form of a .csv.
+
+Citation:
+
+  Hannah Ritchie, Edouard Mathieu, Lucas Rodés-Guirao, Cameron Appel, Charlie Giattino, Esteban Ortiz-Ospina, Joe Hasell, Bobbie Macdonald, Diana Beltekian and Max Roser (2020) - "Coronavirus Pandemic (COVID-19)". Published online at OurWorldInData.org. Retrieved from: 'https://ourworldindata.org/coronavirus' [Online Resource]
+
+# Kazakhstan: Summers are for infection
+
+Kazakhstan, like the rest of the world, has been a country deeply effected by the COVID-19 pandemic. Their infection rates tell a story of 2020 devastation, followed by a 2021 catastrophe. 
+
+Aside from the huge surge of cases in 2021 overall, it is worth noting that the deadlier months tend to be in the Summer - with the most number of cases cropping up in July and August 2021, and with many deaths in both August 2020 and August 2021.
+
+This can be shown by playing around with the arrows at the top of the New_Cases and New_Deaths columns in the first table.
+
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(DT)
+library(tidyverse)
+library(lubridate)
+library(formattable)
+library(gt)
+
+raw <- read.csv("kazakhstan_data.csv")
+raw_ <- raw %>% select(
+  date, total_cases, new_cases, total_deaths, new_deaths, reproduction_rate, new_tests, total_tests, total_vaccinations,people_vaccinated, people_fully_vaccinated, total_boosters, new_vaccinations,population) %>% 
+  mutate(percentage_vaxed = people_fully_vaccinated/population, 
+         percentage_dead = total_deaths/population, 
+         percentage_cases = total_cases/population, 
+         month= months(dmy(date)),
+         monthref = month(dmy(date)),
+         year = year(dmy(date))
+  )
+      
+table1 <- raw_ %>% 
+  select(year, monthref, month, total_cases, new_cases, new_deaths) %>% 
+  group_by(year, monthref, month) %>% 
+  summarise(New_Cases = sum(new_cases), New_Deaths=sum(new_deaths)) %>%
+  datatable(options=list(order=list(1, "asc"),list(list(4), list(5) )))
+
+
+
+vax <- raw_[406:533,]
+
+vax_<- vax %>% 
+  select(date, people_vaccinated, population, year, month) %>% mutate(percentage=round(people_vaccinated/population,digits=4)) %>%
+  fill(people_vaccinated, .direction="up") %>% 
+  fill(percentage, .direction="up") %>% 
+  group_by(year, month) %>% summarise(Total.Vaccinations= max(people_vaccinated), Percentage.Vaccinated=max(percentage)) %>% 
+  arrange(Percentage.Vaccinated)
+
+
+table2 <- vax_[, 2:4] %>% 
+  gt() %>% 
+  tab_header(title="Cumulative Vaccination Numbers in Kazakhstan", 
+             subtitle = "Vaccination numbers since the first rollout of vaccinations in April") %>%
+  tab_source_note("Source: Our World in Data 2021")
+
+```
+
+
+
+
+# Cases and Deaths
+
+### Total Cases and Deaths per month
+#### order by time, cases or deaths as you like!
+
+
+```{r}
+table1
+```
+
+
+# Vaccinations
+In combating the virus, Kazakhstan started their vaccination rollout this year in April.
+
+Vaccination rates have brought them from 7% vaccinated to 34% vaccinated in 5 months, as seen by the final column in the table below.
+
+```{r}
+table2
+```
+
+
