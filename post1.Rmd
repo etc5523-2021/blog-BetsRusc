@@ -60,7 +60,7 @@ vax_<- vax %>%
 
 table2 <- vax_[, 2:4] %>% 
   gt() %>% 
-  tab_header(title="Cumulative Vaccination Numbers in Kazakhstan", 
+  tab_header(title="2021 Kazakhstan Cumulative Vaccinations", 
              subtitle = "Vaccination numbers since the first rollout of vaccinations in April") %>%
   tab_source_note("Source: Our World in Data 2021")
 
@@ -81,7 +81,7 @@ table1
 
 
 # Vaccinations
-In combating the virus, Kazakhstan started their vaccination rollout this in April 2021.
+In combating the virus, Kazakhstan started their vaccination rollout in April 2021.
 
 Vaccination rates have brought them from 7% vaccinated to 34% vaccinated in 5 months, as seen by the final column in the table below.
 
