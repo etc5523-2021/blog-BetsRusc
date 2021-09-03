@@ -5,7 +5,7 @@ knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
 
 
 # Data Description:
-The data used for this blog post was obtained from Our World in Data in the form of a .csv.
+The data used for this blog post was obtained from Our World in Data in the form of a .csv. The data contains information about new covid cases, vaccination numbers, icu patient numbers and death numbers, for each day between 13/03/2020 and 27/08/2021 for several hundred countries. The data for Kazakhstan was extracted from this csv file and saved locally.
 
 Citation:
 
@@ -13,9 +13,9 @@ Citation:
 
 # Kazakhstan: Summers are for infection
 
-Kazakhstan, like the rest of the world, has been a country deeply effected by the COVID-19 pandemic. Their infection rates tell a story of 2020 devastation, followed by a 2021 catastrophe. 
+Kazakhstan, like the rest of the world, has been deeply effected by the COVID-19 pandemic. Their infection rates tell a story of 2020 devastation, followed by a 2021 catastrophe. 
 
-Aside from the huge surge of cases in 2021 overall, it is worth noting that the deadlier months tend to be in the Summer - with the most number of cases cropping up in July and August 2021, and with many deaths in both August 2020 and August 2021.
+Aside from the overall surge of cases in 2021, it is worth noting that the deadlier months tend to be in the Summer - with the most number of cases cropping up in July and August 2021, and with many deaths recorded in both August 2020 and August 2021.
 
 This can be shown by playing around with the arrows at the top of the New_Cases and New_Deaths columns in the first table.
 
@@ -81,7 +81,7 @@ table1
 
 
 # Vaccinations
-In combating the virus, Kazakhstan started their vaccination rollout this year in April.
+In combating the virus, Kazakhstan started their vaccination rollout this in April 2021.
 
 Vaccination rates have brought them from 7% vaccinated to 34% vaccinated in 5 months, as seen by the final column in the table below.
 
