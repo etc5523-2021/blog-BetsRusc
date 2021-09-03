@@ -1,0 +1,33 @@
+
+
+h1 {
+  color: pink;
+  font-size: 40pt;
+}
+
+h2 {
+  color: crimson;
+  font-size: 30pt;
+}
+
+h3 {
+  color: crimson;
+  font-size: 14pt;
+}
+
+p {
+  color: black;
+  font-size: 12pt;
+}
+
+
+th {
+  background-color: crimson;
+  color: white;
+}
+
+footer {
+  color: crimson;
+  font-size: 8pt;
+
+}
