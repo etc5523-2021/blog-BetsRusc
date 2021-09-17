@@ -1,11 +1,138 @@
+<style>
+body {background: rgb(255, 165, 0, 0.2);}
+</style>
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
 ```
 
-## empty for now 
-### placeholder for the next blog post!
+```{r}
+library(tidyverse)
+library(lubridate)
+library(glue)
+raw <- read.csv("armenia_data.csv", stringsAsFactors=FALSE)
+raw_ <- raw %>% select(
+  date, total_cases, new_cases, total_deaths, new_deaths, reproduction_rate, new_tests, total_tests,people_vaccinated, people_fully_vaccinated, total_boosters, population, reproduction_rate, new_tests, total_tests) %>% 
+  mutate(percentage_vaxed = people_fully_vaccinated/population, 
+         percentage_dead = total_deaths/population, 
+         percentage_cases = total_cases/population, 
+         month= months(dmy(date)),
+         monthref = month(dmy(date)),
+         year = year(dmy(date))
+  ) %>%
+  fill(total_tests) %>%
+  mutate(newnew_tests = total_tests - lag(total_tests))
+raw_$date <- as.Date(raw_$date, "%d/%m/%Y")
+```
+
+```{r}
+raw_ <- raw_ %>% mutate(tooltip = glue(
+  " {date}
+   total cases: {total_cases}
+   new cases: {new_cases}
+"))
+plot1 <- raw_ %>% ggplot() + 
+  geom_area(aes(x=date, y=total_cases , text=tooltip), colour="royalblue", fill="red", size=2) + 
+  ggtitle("COVID-19 cases in Armenia") + xlab("Date")+ ylab("Number of Cases") + 
+  scale_x_date(date_labels = "%b %Y", date_breaks = "2 month") + 
+  theme(axis.text.x = element_text(angle=45, hjust=1), 
+        title = element_text(size=20, colour = "red"), 
+        panel.background = element_rect(fill = rgb(1, .31, .40, 0.1)),
+        plot.background = element_rect(fill=rgb(1, .31, .40, 0.1)),
+        panel.grid.major = element_line(colour=rgb(1, .31, .40, 0.1)),
+        panel.grid.minor = element_line(colour=rgb(1, .31, .40, 0.1)),
+        panel.border = element_blank(),
+        axis.line=element_line(colour="pink")
+        )
+```
+
+
+
+
+```{r}
+raw_ <- raw_ %>% mutate(tooltip = glue(
+  " {date}
+    cases: {new_cases}
+    deaths: {new_deaths}
+    tests: {newnew_tests}
+  "
+  ))
+library(RColorBrewer)
+cols <- rev(brewer.pal(4, 'Blues'))
+plot2 <- raw_ %>% ggplot(aes(x=new_cases, y=new_deaths, colour=newnew_tests, size=newnew_tests)) + 
+  geom_point(aes(text=tooltip)) + scale_colour_gradientn(colours= cols) +
+  ggtitle("Number of Tests by Cases & Deaths") +
+  labs(x = "Number of Daily Cases", 
+       y = "Number of Daily Deaths",
+       size = "Number of Tests",
+       colour = "Number of Tests") +
+  theme(axis.text.x = element_text(angle=45, hjust=1), 
+        title = element_text(size=15, colour = "red"), 
+        panel.background = element_rect(fill = rgb(1, .31, .40, 0.1)),
+        plot.background = element_rect(fill=rgb(1, .31, .40, 0.1)),
+        panel.grid.major = element_line(colour = rgb(1, .31, .40, 0.1)),
+        panel.grid.minor = element_line(colour = rgb(1, .31, .40, 0.1)),
+        panel.border = element_blank(),
+        legend.key.size = unit(0.2, 'cm'),
+        legend.title = element_text(size=9),
+        legend.text = element_text(size=8),
+        legend.position = c(0.15,0.85),
+        legend.background = element_blank(),
+        axis.ticks = element_blank(),
+        ) +
+    scale_size_continuous(labels = scales::label_number(accuracy=1, suffix = " k", scale=1/1e3))
+
+```
+# COVID in Armenia - an overview of cases: 
+
+<center>
+[<img src="Flag-Armenia.jpg" width="450"/>](Flag-Armenia.jpg)
+</center>
+
+Armenia has seen more than 250,000 cases of COVID-19 since the pandemic began in March 2020. They saw their largest increase in case numbers in the final months 2020, with daily cases of more than 2000 seen in early November. 
+
+By hovering on the graphic below you can see these daily case numbers and cumulative case numbers over the last 18 months; 
+
+```{r}
+library(plotly)
+ggplotly(plot1, tooltip = "text")
+```
+
+# COVID in Armenia - a dive into motivation for testing: 
+
+With this in mind, we may examine - what compels the people of Armenia to get tested once they get symptoms? Can we find a correlation between high case numbers and high testing numbers? Or do we see more testing with higher death numbers? 
+
+By examining the plot below, we can examine the number of tests performed per day (each day is represented by one dot) by the relative size and colour of the dot, with bigger paler dots representing more tests performed, and smaller, darker dots indicating less testing.
+```{r}
+library(plotly)
+ggplotly(plot2, tooltip = "text")
+```
+
+
+
+
+From the plot above alone, it is hard to definitely (and statistically) say which factor compels more Armenians to get tested, but what we can see is that there are three large pale dots in the top right corner of the graph (denoting 4/11/2020, 29/10/2020 and 7/11/2020), all of which demonstrate that on those days, higher case numbers and death numbers were indeed associated with higher testing numbers.
+
+
+## References:
+### Data Source:
+  Hannah Ritchie, Edouard Mathieu, Lucas Rodés-Guirao, Cameron Appel, Charlie Giattino, Esteban Ortiz-Ospina, Joe Hasell, Bobbie Macdonald, Diana Beltekian and Max Roser (2020) - "Coronavirus Pandemic (COVID-19)". Published online at OurWorldInData.org. Retrieved from: 'https://ourworldindata.org/coronavirus' [Online Resource]
+
+### R packages:
+
+#### glue:
+  Hester J (2020). "glue: Interpreted String Literals" https://cran.r-project.org/web/packages/glue/index.html 
+
+#### lubridate:
+  Grolemund G, Wickham H (2011). “Dates and Times Made Easy with lubridate.” Journal of Statistical Software, 40(3), 1–25. https://www.jstatsoft.org/v40/i03/.
+  
+#### plotly
+  Sievert C (2020). Interactive Web-Based Data Visualization with R, plotly, and shiny. Chapman and Hall/CRC. ISBN 9781138331457, https://plotly-r.com.
+  
+#### tidyverse:  
+  Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686
+  
+
 
 
 

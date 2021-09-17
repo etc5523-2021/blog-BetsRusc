@@ -1,4 +1,17 @@
+<style>
+body {background: rgb(255, 165, 0, 0.2);}
+</style>
+
 # ETC5523 blog website - Bets Ruscoe 
 
+<center>
+[<img src="kazakstan-flag.png" width="600"/>](kazakstan-flag.png)
+</center>
+
+<br>
+
+<center>
+[<img src="Flag-Armenia.jpg" width="600"/>](Flag-Armenia.jpg)
+</center>
 
 

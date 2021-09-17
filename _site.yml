@@ -6,7 +6,7 @@ navbar:
        href: index.html
      - text: "Blog Post 1: Covid in Kazakhstan"
        href: post1.html
-     - text: "Blog Post 2: Placeholder "
+     - text: "Blog Post 2: Covid in Armenia "
        href: post2.html
 output:
   html_document:
